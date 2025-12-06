@@ -1,0 +1,120 @@
+/* *{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.main-footer{
+    color: white;
+    background-color: #0f172a;
+    position: relative;
+    bottom: 0;
+    width: 100%;
+   
+}
+
+.main-footer .container{
+    display: flex;
+    flex-direction: column;
+}
+
+.main-footer .container .row{
+    display: flex;
+    justify-content: space-around;
+    margin: 1.5rem 1rem;
+}
+
+ul{
+    list-style-type:none;
+}
+
+li{
+    cursor: pointer;
+} */
+
+/* Ensure body has enough space for content */
+/* body {
+    margin: 0;
+    padding-bottom: 60px;
+} */
+
+/* Other general styles */
+/* General reset */
+/* General reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Ensure that the content takes up full height */
+html, body {
+    height: 100%;
+}
+
+/* Main body setup to flex */
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* Ensure the page takes full height */
+}
+
+/* Main content area */
+.main-content {
+    flex: 1; /* This allows the content area to grow and fill available space */
+}
+
+/* The main footer */
+.main-footer {
+    color: white;
+    background-color: #0f172a;
+    width: 100%;
+    padding: 20px 0; /* Padding for the footer content */
+}
+
+/* Footer content styles */
+.container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.row {
+    display: flex;
+    justify-content: space-around;
+    margin: 1.5rem 1rem;
+}
+
+.col {
+    flex: 1;
+    padding: 0 1rem;
+}
+
+.col h4 {
+    margin-bottom: 1rem;
+}
+
+.list-unstyled {
+    list-style-type: none;
+}
+
+.list-unstyled li {
+    cursor: pointer;
+    margin-bottom: 0.5rem;
+}
+
+.para {
+    line-height: 1.6;
+}
+
+hr {
+    border: 0;
+    height: 1px;
+    background: #333;
+    margin: 1rem 0;
+}
+
+.col-sm {
+    text-align: center;
+    width: 100%;
+}
