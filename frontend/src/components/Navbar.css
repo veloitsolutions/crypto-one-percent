@@ -44,10 +44,12 @@ nav ul li {
 
 .admin-dashboard nav ul li.logout-item button.nav-button:hover {
     background-color: #b91c1c;
-    transform: scale(1.05); /* Added slight scale effect on hover */
+    transform: scale(1.05);
+    /* Added slight scale effect on hover */
 }
 
-nav ul li a, nav ul li button.nav-button {
+nav ul li a,
+nav ul li button.nav-button {
     display: block;
     text-decoration: none;
     color: white;
@@ -60,7 +62,7 @@ nav ul li a, nav ul li button.nav-button {
     cursor: pointer;
 }
 
-nav ul li a:not(.active):hover, 
+nav ul li a:not(.active):hover,
 nav ul li button.nav-button:hover {
     background-color: #172554;
 }
@@ -98,7 +100,8 @@ nav .menu span {
 }
 
 .modal-content {
-    background-color: white;  /* Changed from dark to white background */
+    background-color: white;
+    /* Changed from dark to white background */
     padding: 2rem;
     border-radius: 0.5rem;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
@@ -108,14 +111,16 @@ nav .menu span {
 
 .modal-content h2 {
     margin: 0 0 1rem 0;
-    color: #0f172a;  /* Dark text for heading */
+    color: #0f172a;
+    /* Dark text for heading */
     font-size: 1.5rem;
     font-weight: 600;
 }
 
 .modal-content p {
     margin-bottom: 1.5rem;
-    color: #1e293b;  /* Dark text for paragraph */
+    color: #1e293b;
+    /* Dark text for paragraph */
     font-size: 1.1rem;
     line-height: 1.5;
 }
@@ -185,7 +190,8 @@ nav .menu span {
         text-align: center;
     }
 
-    nav ul li a, nav ul li button.nav-button {
+    nav ul li a,
+    nav ul li button.nav-button {
         margin: 0.2rem 0.5rem;
     }
 
@@ -193,8 +199,10 @@ nav .menu span {
     .admin-dashboard nav ul li.logout-item button.nav-button {
         margin: 0.5rem auto;
         width: 90%;
-        max-width: 250px; /* Increased from 200px to accommodate larger text */
-        font-size: 1.25rem; /* Slightly smaller on mobile but still prominent */
+        max-width: 250px;
+        /* Increased from 200px to accommodate larger text */
+        font-size: 1.25rem;
+        /* Slightly smaller on mobile but still prominent */
     }
 
     .logout-item {
@@ -203,5 +211,38 @@ nav .menu span {
 
     .nav-right {
         width: 100%;
+    }
+}
+
+/* Extra Small Mobile - 320px */
+@media (max-width: 320px) {
+    nav .title {
+        font-size: 1.2rem;
+        margin: 0.8rem;
+    }
+
+    nav ul li a,
+    nav ul li button.nav-button {
+        margin: 0.2rem 0.3rem;
+        padding: 0.4rem;
+        font-size: 0.9rem;
+    }
+
+    .modal-content {
+        padding: 1.5rem;
+        max-width: 280px;
+    }
+
+    .modal-content h2 {
+        font-size: 1.2rem;
+    }
+
+    .modal-content p {
+        font-size: 0.95rem;
+    }
+
+    .modal-button {
+        padding: 0.6rem 1rem;
+        font-size: 0.9rem;
     }
 }
