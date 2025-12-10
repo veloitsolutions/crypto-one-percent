@@ -44,7 +44,7 @@ export const AuthProvider = ({ children }) => {
     try {
       const token = localStorage.getItem('token');
       if (token) {
-        await axios.post('http://localhost:4000/api/logout', {}, {
+        await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:4000/api'}/logout`, {}, {
           headers: {
             Authorization: `Bearer ${token}`
           },

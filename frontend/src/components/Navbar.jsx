@@ -11,7 +11,7 @@ export const Navbar = () => {
   const { isLoggedIn, logout, user } = useAuth();
   const navigate = useNavigate();
   const [isMainTab, setIsMainTab] = useState(true);
-  
+
   // Check if this is the admin dashboard tab
   const isAdminDashboard = window.location.pathname === '/admin/dashboard';
 
@@ -24,7 +24,7 @@ export const Navbar = () => {
 
   const handleLogout = async () => {
     try {
-      const response = await fetch('http://localhost:4000/api/logout', {
+      const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:4000/api'}/logout`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`
@@ -68,7 +68,7 @@ export const Navbar = () => {
     if (user?.role === 'Admin' && isAdminDashboard) {
       return (
         <li className="logout-item">
-          <button 
+          <button
             onClick={() => setShowLogoutModal(true)}
             className="nav-button"
           >
@@ -84,7 +84,7 @@ export const Navbar = () => {
         <>
           {user?.role !== 'Admin' && (
             <li>
-              <NavLink 
+              <NavLink
                 to="/dashboard"
                 onClick={() => setMenuOpen(false)}
               >
@@ -93,7 +93,7 @@ export const Navbar = () => {
             </li>
           )}
           <li className="logout-item">
-            <button 
+            <button
               onClick={() => setShowLogoutModal(true)}
               className="nav-button"
             >
@@ -108,7 +108,7 @@ export const Navbar = () => {
     return (
       <>
         <li>
-          <NavLink 
+          <NavLink
             to="/login"
             onClick={() => setMenuOpen(false)}
           >
@@ -116,7 +116,7 @@ export const Navbar = () => {
           </NavLink>
         </li>
         <li>
-          <NavLink 
+          <NavLink
             to="/signup"
             onClick={() => setMenuOpen(false)}
           >
@@ -156,13 +156,13 @@ export const Navbar = () => {
             <h2>Confirm Logout</h2>
             <p>Are you sure you want to logout?</p>
             <div className="modal-buttons">
-              <button 
+              <button
                 onClick={handleLogout}
                 className="modal-button confirm"
               >
                 Yes, Logout
               </button>
-              <button 
+              <button
                 onClick={() => setShowLogoutModal(false)}
                 className="modal-button cancel"
               >

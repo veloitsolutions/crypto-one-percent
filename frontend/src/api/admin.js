@@ -3,7 +3,7 @@
 // src/api/admin.js
 import axios from 'axios';
 
-const API_URL = 'http://localhost:4000/api/admin';
+const API_URL = `${import.meta.env.VITE_API_URL || 'http://localhost:4000/api'}/admin`;
 
 export const getAllUsers = async () => {
     const token = localStorage.getItem('token');

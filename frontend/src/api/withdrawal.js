@@ -3,13 +3,13 @@
 //withdrawal.js
 import axios from 'axios';
 
-const BASE_URL = 'http://localhost:4000/api/withdrawal';
+const BASE_URL = `${import.meta.env.VITE_API_URL || 'http://localhost:4000/api'}/withdrawal`;
 
 // Get all withdrawal requests (admin only)
 export const getAllWithdrawalRequests = () => {
     return axios.get(`${BASE_URL}/requests`, {
-        headers: { 
-            Authorization: `Bearer ${localStorage.getItem('token')}` 
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`
         },
         withCredentials: true
     });
@@ -17,11 +17,11 @@ export const getAllWithdrawalRequests = () => {
 
 // Create a new withdrawal request (user)
 export const createWithdrawalRequest = (amount) => {
-    return axios.post(`${BASE_URL}/request`, 
+    return axios.post(`${BASE_URL}/request`,
         { amount },
         {
-            headers: { 
-                Authorization: `Bearer ${localStorage.getItem('token')}` 
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('token')}`
             },
             withCredentials: true
         }
@@ -33,8 +33,8 @@ export const processWithdrawalRequest = (requestId, status) => {
     return axios.put(`${BASE_URL}/process/${requestId}`,
         { status },
         {
-            headers: { 
-                Authorization: `Bearer ${localStorage.getItem('token')}` 
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('token')}`
             },
             withCredentials: true
         }
@@ -44,8 +44,8 @@ export const processWithdrawalRequest = (requestId, status) => {
 // Get user's withdrawal history (user)
 export const getUserWithdrawalHistory = () => {
     return axios.get(`${BASE_URL}/history`, {
-        headers: { 
-            Authorization: `Bearer ${localStorage.getItem('token')}` 
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`
         },
         withCredentials: true
     });
@@ -54,8 +54,8 @@ export const getUserWithdrawalHistory = () => {
 // Get withdrawal request details (admin & user)
 export const getWithdrawalRequestDetails = (requestId) => {
     return axios.get(`${BASE_URL}/request/${requestId}`, {
-        headers: { 
-            Authorization: `Bearer ${localStorage.getItem('token')}` 
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`
         },
         withCredentials: true
     });
@@ -110,7 +110,7 @@ export const validateWithdrawalAmount = (amount, balance) => {
     }
 
     const withdrawalAmount = parseFloat(amount);
-    
+
     if (withdrawalAmount <= 0) {
         return {
             isValid: false,

@@ -17,8 +17,9 @@ const WithdrawalModal = ({ isOpen, onClose, tokenBalance, onWithdraw }) => {
 
         try {
             const response = await axios.post(
-                'http://localhost:4000/api/withdrawal/request',
-                { amount: Number(amount),
+                `${import.meta.env.VITE_API_URL || 'http://localhost:4000/api'}/withdrawal/request`,
+                {
+                    amount: Number(amount),
                     link: link
                 },
                 {
@@ -82,15 +83,15 @@ const WithdrawalModal = ({ isOpen, onClose, tokenBalance, onWithdraw }) => {
                     {error && <div className="error-message">{error}</div>}
 
                     <div className="form-buttons">
-                        <button 
-                            type="submit" 
+                        <button
+                            type="submit"
                             className="submit-btn"
                             disabled={loading || !amount || Number(amount) > tokenBalance}
                         >
                             {loading ? 'Processing...' : 'Submit Withdrawal'}
                         </button>
-                        <button 
-                            type="button" 
+                        <button
+                            type="button"
                             className="cancel-btn"
                             onClick={onClose}
                             disabled={loading}
@@ -127,11 +128,11 @@ export const Dashboard = () => {
             timer = setInterval(() => {
                 const now = new Date();
                 const timeLeft = new Date(nextMiningTime) - now;
-                
+
                 if (timeLeft <= 0) {
                     setCountdown(null);
                     clearInterval(timer);
-                    
+
                     if (pendingIncrease) {
                         setUser(prev => ({
                             ...prev,
@@ -139,7 +140,7 @@ export const Dashboard = () => {
                         }));
                         setMiningStatus("Mining completed! +" + (pendingIncrease.increase).toFixed(2) + " tokens");
                         setPendingIncrease(null);
-                        
+
                         setTimeout(() => setMiningStatus(""), 3000);
                     }
                 } else {
@@ -163,11 +164,11 @@ export const Dashboard = () => {
                 return;
             }
 
-            const response = await axios.get("http://localhost:4000/api/me", {
-                headers: { 
+            const response = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:4000/api'}/me`, {
+                headers: {
                     Authorization: `Bearer ${storedToken}`,
                 },
-                withCredentials: true 
+                withCredentials: true
             });
 
             if (response.data.success) {
@@ -186,7 +187,7 @@ export const Dashboard = () => {
     const fetchTokenBalance = async () => {
         try {
             const storedToken = localStorage.getItem("token");
-            const response = await axios.get("http://localhost:4000/api/mining/balance", {
+            const response = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:4000/api'}/mining/balance`, {
                 headers: {
                     Authorization: `Bearer ${storedToken}`
                 },
@@ -195,14 +196,14 @@ export const Dashboard = () => {
 
             if (response.data.success) {
                 const { tokenBalance, miningBalance, pendingWithdrawal, nextMiningAvailable } = response.data.data;
-                
+
                 setUser(prev => ({
                     ...prev,
                     tokenBalance: tokenBalance
                 }));
                 setMiningBalance(miningBalance);
                 setPendingWithdrawal(pendingWithdrawal);
-                
+
                 if (nextMiningAvailable) {
                     const nextTime = new Date(nextMiningAvailable);
                     if (nextTime > new Date()) {
@@ -221,7 +222,7 @@ export const Dashboard = () => {
     const handleMining = async () => {
         try {
             const storedToken = localStorage.getItem("token");
-            const response = await axios.post("http://localhost:4000/api/mining/mine", {}, {
+            const response = await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:4000/api'}/mining/mine`, {}, {
                 headers: {
                     Authorization: `Bearer ${storedToken}`
                 },
@@ -235,7 +236,7 @@ export const Dashboard = () => {
                 });
                 setNextMiningTime(response.data.data.nextMiningAvailable);
                 setMiningStatus("Mining started! Tokens will be added in 24 hours.");
-                
+
                 // Update mining balance
                 setMiningBalance(response.data.data.miningBalance);
             }
@@ -318,7 +319,7 @@ export const Dashboard = () => {
                             </span>
                         )}
                     </div>
-                    
+
                     {pendingWithdrawal > 0 && (
                         <div className="pending-withdrawal-info">
                             <div className="withdrawal-amount">
@@ -330,7 +331,7 @@ export const Dashboard = () => {
                         </div>
                     )}
 
-<div className="action-buttons">
+                    <div className="action-buttons">
                         <button
                             className={`mine-button ${countdown !== null ? 'disabled' : ''}`}
                             onClick={handleMining}
@@ -356,7 +357,7 @@ export const Dashboard = () => {
                     <button className="add-token-button">
                         Add Tokens
                     </button>
-                    <button 
+                    <button
                         className={`withdraw-button ${user.hasActiveWithdrawal ? 'disabled' : ''}`}
                         onClick={() => setShowWithdrawalModal(true)}
                         disabled={user.hasActiveWithdrawal}

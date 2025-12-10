@@ -15,15 +15,15 @@ export const ProtectedRoute = ({ children, requiredRole }) => {
       try {
         const token = localStorage.getItem('token');
         const userData = localStorage.getItem('user');
-        
+
         if (!token || !userData) {
           setLoading(false);
           return;
         }
 
         const parsedUserData = JSON.parse(userData);
-        
-        const response = await axios.get('http://localhost:4000/api/me', {
+
+        const response = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:4000/api'}/me`, {
           headers: {
             Authorization: `Bearer ${token}`
           },

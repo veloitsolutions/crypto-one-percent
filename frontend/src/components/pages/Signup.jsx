@@ -29,7 +29,7 @@
 //       ...formData,
 //       [name]: value
 //     });
-    
+
 //     // Clear error when user starts typing
 //     if (errors[name]) {
 //       setErrors({
@@ -90,7 +90,7 @@
 //       }
 
 //       setSuccess(data.message);
-      
+
 //       // Clear form
 //       setFormData({
 //         name: '',
@@ -104,7 +104,7 @@
 //       setTimeout(() => {
 //         navigate('/login');
 //       }, 2000);
-      
+
 //     } catch (err) {
 //       setErrors({
 //         submit: err.message || 'Something went wrong'
@@ -211,7 +211,7 @@ export const Signup = () => {
       ...formData,
       [name]: value
     });
-    
+
     // Clear error when user starts typing
     if (errors[name]) {
       setErrors({
@@ -261,7 +261,7 @@ export const Signup = () => {
     }
 
     try {
-      const response = await fetch('http://localhost:4000/api/signup', {
+      const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:4000/api'}/signup`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -277,7 +277,7 @@ export const Signup = () => {
       }
 
       setSuccess(data.message);
-      
+
       // Clear form
       setFormData({
         name: '',
@@ -292,7 +292,7 @@ export const Signup = () => {
       setTimeout(() => {
         navigate('/login');
       }, 2000);
-      
+
     } catch (err) {
       setErrors({
         submit: err.message || 'Something went wrong'

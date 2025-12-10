@@ -3,24 +3,24 @@
 // src/api/referral.js
 import axios from 'axios';
 
-const BASE_URL = 'http://localhost:4000/api/admin/referral-rewards';
+const BASE_URL = `${import.meta.env.VITE_API_URL || 'http://localhost:4000/api'}/admin/referral-rewards`;
 
 // Get all pending referral rewards (admin only)
 export const getPendingReferralRewards = () => {
     return axios.get(`${BASE_URL}`, {
-        headers: { 
-            Authorization: `Bearer ${localStorage.getItem('token')}` 
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`
         },
         withCredentials: true
     });
 };
 
 export const approveReferralReward = (rewardId) => {
-    return axios.post(`${BASE_URL}/${rewardId}/approve`, 
+    return axios.post(`${BASE_URL}/${rewardId}/approve`,
         { status: 'approved' },
         {
-            headers: { 
-                Authorization: `Bearer ${localStorage.getItem('token')}` 
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('token')}`
             },
             withCredentials: true
         }
@@ -29,11 +29,11 @@ export const approveReferralReward = (rewardId) => {
 
 // Reject a referral reward (admin only)
 export const rejectReferralReward = (rewardId) => {
-    return axios.post(`${BASE_URL}/${rewardId}/reject`, 
+    return axios.post(`${BASE_URL}/${rewardId}/reject`,
         { status: 'rejected' },
         {
-            headers: { 
-                Authorization: `Bearer ${localStorage.getItem('token')}` 
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('token')}`
             },
             withCredentials: true
         }
@@ -43,8 +43,8 @@ export const rejectReferralReward = (rewardId) => {
 // Get referral reward details (admin only)
 export const getReferralRewardDetails = (rewardId) => {
     return axios.get(`${BASE_URL}/${rewardId}`, {
-        headers: { 
-            Authorization: `Bearer ${localStorage.getItem('token')}` 
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`
         },
         withCredentials: true
     });
@@ -53,8 +53,8 @@ export const getReferralRewardDetails = (rewardId) => {
 // Get user's referral history (user & admin)
 export const getUserReferralHistory = (userId) => {
     return axios.get(`${BASE_URL}/history/${userId}`, {
-        headers: { 
-            Authorization: `Bearer ${localStorage.getItem('token')}` 
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`
         },
         withCredentials: true
     });
@@ -112,7 +112,7 @@ export const validateReferralReward = (reward) => {
     }
 
     const rewardAmount = parseFloat(reward.amount);
-    
+
     if (rewardAmount <= 0) {
         return {
             isValid: false,

@@ -29,10 +29,10 @@ export const Login = () => {
     e.preventDefault();
     setLoading(true);
     setError('');
-    
+
     try {
       const response = await axios.post(
-        'http://localhost:4000/api/login', 
+        `${import.meta.env.VITE_API_URL || 'http://localhost:4000/api'}/login`,
         formData,
         {
           headers: {
@@ -41,14 +41,14 @@ export const Login = () => {
           withCredentials: true
         }
       );
-  
+
       if (response.data.success) {
         const { token, user } = response.data;
         // Store auth data before opening new tab
         localStorage.setItem('token', token);
         localStorage.setItem('user', JSON.stringify(user));
         login(token, user);
-        
+
         if (user.role === 'Admin') {
           // Use a state parameter to indicate this is a new tab
           const adminUrl = `${window.location.origin}/admin/dashboard?newTab=true`;
@@ -63,7 +63,7 @@ export const Login = () => {
     } catch (error) {
       console.error('Login error:', error);
       setError(
-        error.response?.data?.message || 
+        error.response?.data?.message ||
         'An error occurred during login. Please try again.'
       );
     } finally {
@@ -109,8 +109,8 @@ export const Login = () => {
               required
             />
           </div>
-          <button 
-            type="submit" 
+          <button
+            type="submit"
             className="login-button"
             disabled={loading}
           >
