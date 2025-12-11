@@ -3,6 +3,7 @@
 // src/context/AuthContext.jsx
 import React, { createContext, useState, useContext, useCallback, useEffect } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const AuthContext = createContext(null);
 
@@ -41,23 +42,28 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const logout = useCallback(async () => {
+    // Clear state immediately for smooth UX
+    setIsLoggedIn(false);
+    setUser(null);
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+
+    // Try to call logout API in background, but don't wait for it
     try {
       const token = localStorage.getItem('token');
       if (token) {
-        await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:4000/api'}/logout`, {}, {
+        // Call API but don't await it - fire and forget
+        axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:4000/api'}/logout`, {}, {
           headers: {
             Authorization: `Bearer ${token}`
           },
           withCredentials: true
+        }).catch(() => {
+          // Ignore errors - user is already logged out locally
         });
       }
     } catch (error) {
-      console.error('Logout error:', error);
-    } finally {
-      localStorage.removeItem('token');
-      localStorage.removeItem('user');
-      setIsLoggedIn(false);
-      setUser(null);
+      // Ignore errors - user is already logged out locally
     }
   }, []);
 

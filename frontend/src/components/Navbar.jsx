@@ -23,30 +23,17 @@ export const Navbar = () => {
   }, []);
 
   const handleLogout = async () => {
-    try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:4000/api'}/logout`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
-        },
-        credentials: 'include'
-      });
+    setShowLogoutModal(false);
+    await logout();
 
-      if (response.ok) {
-        logout();
-        setShowLogoutModal(false);
-        if (isAdminDashboard) {
-          window.close();
-        } else {
-          setTimeout(() => { navigate('/login'); }, 0);
-        }
-      }
-    } catch (error) {
-      console.error('Logout error:', error);
-      logout();
+    // Navigate after logout
+    if (isAdminDashboard) {
+      window.close();
+    } else {
       navigate('/login');
     }
   };
+
 
   // Determine what navigation items to show
   const renderNavItems = () => {

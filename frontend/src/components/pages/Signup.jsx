@@ -260,6 +260,10 @@ export const Signup = () => {
       return;
     }
 
+    // Clear previous errors and success messages
+    setErrors({});
+    setSuccess('');
+
     try {
       const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:4000/api'}/signup`, {
         method: 'POST',
@@ -272,11 +276,16 @@ export const Signup = () => {
 
       const data = await response.json();
 
-      if (!data.success) {
-        throw new Error(data.message);
+      if (!response.ok || !data.success) {
+        // Show specific error message from backend
+        setErrors({
+          submit: data.message || 'Signup failed. Please try again.'
+        });
+        return;
       }
 
-      setSuccess(data.message);
+      // Success
+      setSuccess(data.message || 'User Created Successfully');
 
       // Clear form
       setFormData({
@@ -294,8 +303,9 @@ export const Signup = () => {
       }, 2000);
 
     } catch (err) {
+      console.error('Signup error:', err);
       setErrors({
-        submit: err.message || 'Something went wrong'
+        submit: 'Network error. Please check your connection and try again.'
       });
     }
   };

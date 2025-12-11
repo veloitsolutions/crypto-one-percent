@@ -7,6 +7,7 @@ import { useAuth } from '../context/AuthContext';
 
 export const ProtectedRoute = ({ children, requiredRole }) => {
   const [loading, setLoading] = useState(true);
+  const [authVerified, setAuthVerified] = useState(false);
   const { isLoggedIn, login, logout, user, isLoading: authLoading } = useAuth();
   const location = useLocation();
 
@@ -18,11 +19,13 @@ export const ProtectedRoute = ({ children, requiredRole }) => {
 
         if (!token || !userData) {
           setLoading(false);
+          setAuthVerified(true);
           return;
         }
 
         const parsedUserData = JSON.parse(userData);
 
+        // Only verify with backend if we have a token
         const response = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:4000/api'}/me`, {
           headers: {
             Authorization: `Bearer ${token}`
@@ -33,18 +36,26 @@ export const ProtectedRoute = ({ children, requiredRole }) => {
         if (response.data.success) {
           login(token, parsedUserData);
         } else {
-          await logout();
+          // Clear local storage but don't call logout API
+          localStorage.removeItem('token');
+          localStorage.removeItem('user');
         }
       } catch (error) {
         console.error('Authentication error:', error);
-        await logout();
+        // Clear local storage but don't call logout API on auth failure
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
       } finally {
         setLoading(false);
+        setAuthVerified(true);
       }
     };
 
-    verifyAuth();
-  }, [login, logout]);
+    // Only verify once when component mounts
+    if (!authVerified) {
+      verifyAuth();
+    }
+  }, [authVerified]); // Only depend on authVerified, not login/logout
 
   // Wait for both auth context and local loading state
   if (authLoading || loading) {

@@ -12,7 +12,7 @@ const generateUserId = async () => {
     while (true) {
         // Generate a random 8-character string
         const userId = 'USR' + Math.random().toString(36).substr(2, 8).toUpperCase();
-        
+
         // Check if this userId already exists
         const existingUser = await User.findOne({ userId });
         if (!existingUser) {
@@ -27,12 +27,29 @@ exports.signup = async (req, res) => {
     try {
         const { name, email, phone, password, role, referralCode } = req.body;
 
-        // Check for existing user
+        // Validate required fields
+        if (!name || !email || !phone || !password) {
+            return res.status(400).json({
+                success: false,
+                message: "Please provide all required fields",
+            });
+        }
+
+        // Check for existing user by email
         const existingUser = await User.findOne({ email });
         if (existingUser) {
             return res.status(400).json({
                 success: false,
-                message: "User already exists",
+                message: "Email already registered. Please use a different email or login.",
+            });
+        }
+
+        // Check for existing phone number
+        const existingPhone = await User.findOne({ phone });
+        if (existingPhone) {
+            return res.status(400).json({
+                success: false,
+                message: "Phone number already registered. Please use a different number.",
             });
         }
 
@@ -57,7 +74,7 @@ exports.signup = async (req, res) => {
             if (!referrer) {
                 return res.status(400).json({
                     success: false,
-                    message: "Invalid referral code",
+                    message: "Invalid referral code. Please check and try again.",
                 });
             }
             referredBy = referralCode;
@@ -91,17 +108,38 @@ exports.signup = async (req, res) => {
 
         return res.status(200).json({
             success: true,
-            message: "User Created Successfully",
+            message: "Account created successfully! Redirecting to login...",
             userId: user.userId
         });
     } catch (error) {
-        console.error(error);
+        console.error('Signup error:', error);
+
+        // Handle MongoDB duplicate key errors
+        if (error.code === 11000) {
+            const field = Object.keys(error.keyPattern)[0];
+            let message = "This information is already registered.";
+
+            if (field === 'email') {
+                message = "Email already registered. Please use a different email or login.";
+            } else if (field === 'phone') {
+                message = "Phone number already registered. Please use a different number.";
+            } else if (field === 'userId') {
+                message = "User ID conflict. Please try again.";
+            }
+
+            return res.status(400).json({
+                success: false,
+                message: message,
+            });
+        }
+
         return res.status(500).json({
             success: false,
-            message: "User cannot be registered, please try later",
+            message: "Unable to create account. Please try again later.",
         });
     }
 }
+
 
 
 exports.login = async (req, res) => {
