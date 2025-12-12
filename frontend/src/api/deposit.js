@@ -1,10 +1,11 @@
+
 import axios from 'axios';
 
-const API_URL = `${import.meta.env.VITE_API_URL || 'http://localhost:4000/api'}/withdrawal`;
+const API_URL = `${import.meta.env.VITE_API_URL || 'http://localhost:4000/api'}/deposit`;
 
-export const createWithdrawalRequest = async (amount, link) => {
+export const createDepositRequest = async (amount, transactionId) => {
     const token = localStorage.getItem('token');
-    return axios.post(`${API_URL}/request`, { amount, link }, {
+    return axios.post(`${API_URL}/request`, { amount, transactionId }, {
         headers: {
             Authorization: `Bearer ${token}`
         },
@@ -12,7 +13,7 @@ export const createWithdrawalRequest = async (amount, link) => {
     });
 };
 
-export const getAllWithdrawalRequests = async () => {
+export const getAllDepositRequests = async () => {
     const token = localStorage.getItem('token');
     return axios.get(`${API_URL}/requests`, {
         headers: {
@@ -22,7 +23,7 @@ export const getAllWithdrawalRequests = async () => {
     });
 };
 
-export const processWithdrawalRequest = async (requestId, status) => {
+export const processDepositRequest = async (requestId, status) => {
     const token = localStorage.getItem('token');
     return axios.put(`${API_URL}/process/${requestId}`, { status }, {
         headers: {

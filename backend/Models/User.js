@@ -54,6 +54,10 @@ const userSchema = new mongoose.Schema({
     pendingReferralRewards: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'ReferralReward'
+    }],
+    completedTasks: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Task'
     }]
 });
 

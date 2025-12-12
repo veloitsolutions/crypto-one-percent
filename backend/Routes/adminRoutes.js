@@ -11,7 +11,9 @@ const { getAllUsers, getUserDetails, editUserDetails, getPendingReferralRewards,
 router.get("/users", auth, isAdmin, getAllUsers);
 router.get("/users/:userId", auth, isAdmin, getUserDetails);
 
+
 router.put("/users/:userId", auth, isAdmin, editUserDetails);
+router.post("/users/:userId/add-balance", auth, isAdmin, require("../Controllers/adminController").addTokenBalance);
 module.exports = router;
 
 router.get("/referral-rewards", auth, isAdmin, getPendingReferralRewards);

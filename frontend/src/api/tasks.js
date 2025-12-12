@@ -1,12 +1,11 @@
 
-// src/api/admin.js
 import axios from 'axios';
 
-const API_URL = `${import.meta.env.VITE_API_URL || 'http://localhost:4000/api'}/admin`;
+const API_URL = `${import.meta.env.VITE_API_URL || 'http://localhost:4000/api'}/tasks`;
 
-export const getAllUsers = async () => {
+export const getTasks = async () => {
     const token = localStorage.getItem('token');
-    return axios.get(`${API_URL}/users`, {
+    return axios.get(`${API_URL}`, {
         headers: {
             Authorization: `Bearer ${token}`
         },
@@ -14,9 +13,9 @@ export const getAllUsers = async () => {
     });
 };
 
-export const getUserDetails = async (userId) => {
+export const createTask = async (taskData) => {
     const token = localStorage.getItem('token');
-    return axios.get(`${API_URL}/users/${userId}`, {
+    return axios.post(`${API_URL}`, taskData, {
         headers: {
             Authorization: `Bearer ${token}`
         },
@@ -24,9 +23,9 @@ export const getUserDetails = async (userId) => {
     });
 };
 
-export const editUser = async (userId, userData) => {
+export const completeTask = async (taskId) => {
     const token = localStorage.getItem('token');
-    return axios.put(`${API_URL}/users/${userId}`, userData, {
+    return axios.post(`${API_URL}/complete/${taskId}`, {}, {
         headers: {
             Authorization: `Bearer ${token}`
         },
@@ -34,9 +33,9 @@ export const editUser = async (userId, userData) => {
     });
 };
 
-export const addTokenBalance = async (userId, amount) => {
+export const deleteTask = async (taskId) => {
     const token = localStorage.getItem('token');
-    return axios.post(`${API_URL}/users/${userId}/add-balance`, { amount }, {
+    return axios.delete(`${API_URL}/${taskId}`, {
         headers: {
             Authorization: `Bearer ${token}`
         },

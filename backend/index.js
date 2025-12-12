@@ -9,7 +9,7 @@ require('dotenv').config();
 const PORT = process.env.PORT || 4000;
 
 app.use(cors({
-    origin: "http://localhost:5173", 
+    origin: "http://localhost:5173",
     credentials: true,
 }));
 
@@ -34,13 +34,19 @@ require("./config/database").connect();
 const user = require("./Routes/authRoutes");
 const admin = require("./Routes/adminRoutes");
 const mining = require("./Routes/miningRoutes");
-const withdrawal = require("./Routes/withdrawalRoutes"); // Add this line
+const withdrawal = require("./Routes/withdrawalRoutes");
+const deposit = require("./Routes/depositRoutes");
+const settings = require("./Routes/settingsRoutes");
+const tasks = require("./Routes/taskRoutes");
 
 // Use routes
 app.use("/api", user);
 app.use("/api/admin", admin);
 app.use("/api/mining", mining);
-app.use("/api/withdrawal", withdrawal); // Add this line
+app.use("/api/withdrawal", withdrawal);
+app.use("/api/deposit", deposit);
+app.use("/api/settings", settings);
+app.use("/api/tasks", tasks);
 
 app.listen(PORT, () => {
     console.log(`App is listening at http://localhost:${PORT}`);

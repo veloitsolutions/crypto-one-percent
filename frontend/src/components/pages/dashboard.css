@@ -1,3 +1,4 @@
+/* Main Dashboard Styles */
 .dashboard {
   font-family: Arial, sans-serif;
   max-width: 1000px;
@@ -112,16 +113,20 @@
   flex-wrap: wrap;
 }
 
-.add-token-button {
+.add-token-button,
+.withdraw-button {
   padding: 12px 24px;
   font-size: 16px;
   color: #fff;
-  background-color: #28a745;
   border: none;
   border-radius: 5px;
   cursor: pointer;
   transition: background-color 0.2s ease;
   min-width: 150px;
+}
+
+.add-token-button {
+  background-color: #28a745;
 }
 
 .add-token-button:hover {
@@ -129,15 +134,7 @@
 }
 
 .withdraw-button {
-  padding: 12px 24px;
-  font-size: 16px;
-  color: #fff;
   background-color: #dc3545;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-  min-width: 150px;
 }
 
 .withdraw-button:hover {
@@ -148,59 +145,136 @@
   background-color: #cccccc;
   cursor: not-allowed;
   opacity: 0.7;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
-.mining-status {
-  margin-top: 10px;
-  padding: 10px;
-  border-radius: 5px;
-  text-align: center;
-}
-
-.mining-status.success {
-  background-color: #d4edda;
-  color: #155724;
-  border: 1px solid #c3e6cb;
-}
-
-.mining-status.error {
-  background-color: #f8d7da;
-  color: #721c24;
-  border: 1px solid #f5c6cb;
-}
-
-.next-mining-time {
-  margin-top: 10px;
-  font-size: 0.9em;
-  color: #666;
-  text-align: center;
-  padding: 5px;
-  border-radius: 4px;
+/* Video Tasks Styles */
+.video-tasks-section {
+  margin-top: 2rem;
+  padding: 1.5rem;
   background-color: #f8f9fa;
-}
-
-.pending-withdrawal-info {
-  margin: 20px 0;
-  padding: 15px;
-  background-color: #f8f9fa;
-  border-radius: 8px;
+  border-radius: 12px;
   border: 1px solid #e9ecef;
 }
 
-.withdrawal-amount {
-  color: #dc3545;
-  font-size: 1.1em;
-  margin-bottom: 8px;
+.video-tasks-section h3 {
+  text-align: center;
+  color: #2c3e50;
+  margin-bottom: 1.5rem;
+  font-size: 1.5rem;
 }
 
-.mining-balance {
+.tasks-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+
+.task-card {
+  background: white;
+  padding: 1rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  transition: transform 0.2s;
+}
+
+.task-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+.task-card.completed {
+  opacity: 0.8;
+  background-color: #fdfdfd;
+}
+
+.task-card h4 {
+  margin: 0;
+  color: #333;
+  font-size: 1.1rem;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.video-wrapper {
+  position: relative;
+  padding-bottom: 56.25%;
+  /* 16:9 Aspect Ratio */
+  height: 0;
+  background: #000;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.video-wrapper iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+.task-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: auto;
+}
+
+.reward-badge {
+  background-color: #fff3cd;
+  color: #856404;
+  padding: 4px 8px;
+  border-radius: 20px;
+  font-weight: bold;
+  font-size: 0.9rem;
+}
+
+.claim-btn {
+  background-color: #6c5ce7;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.claim-btn:hover {
+  background-color: #5b4bc4;
+}
+
+.completed-badge {
   color: #28a745;
-  font-size: 1.1em;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  gap: 5px;
 }
 
+.completed-badge::before {
+  content: '✓';
+}
+
+.task-message {
+  text-align: center;
+  margin: 1rem 0;
+  padding: 10px;
+  border-radius: 8px;
+  font-weight: bold;
+}
+
+.task-message.success {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+/* Other Dashboard Styles */
 .dashboard-container {
   display: flex;
   align-items: center;
@@ -215,6 +289,9 @@
   width: 150px;
   height: auto;
   flex-shrink: 0;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  object-fit: cover;
 }
 
 .dashboard-image.left {
@@ -231,236 +308,32 @@
   order: 3;
 }
 
-/* Tablet Styles (768px - 1024px) */
+/* Responsive adjustments */
 @media (max-width: 1024px) {
   .dashboard-container {
     gap: 15px;
     padding: 15px 10px;
   }
+}
 
-  .dashboard {
-    padding: 2rem 1.5rem;
+@media (max-width: 768px) {
+  .dashboard-container {
+    flex-direction: column;
   }
 
   .dashboard-image {
-    width: 120px;
-  }
-
-  .token-value {
-    font-size: 2em;
-  }
-
-  .user-info {
-    gap: 15px 30px;
-  }
-
-  .info-item {
-    font-size: 16px;
-  }
-}
-
-/* Mobile Styles (max-width: 767px) */
-@media (max-width: 767px) {
-  .dashboard-container {
-    flex-direction: column;
-    gap: 10px;
-    padding: 10px;
-    min-height: auto;
-  }
-
-  .dashboard-image.left,
-  .dashboard-image.right {
     display: none;
-    /* Hide decorative images on mobile */
   }
 
   .dashboard {
-    padding: 1.5rem 1rem;
     width: 100%;
-    max-width: 100%;
-    margin-top: 0;
-    order: 1;
   }
 
   .user-info {
     grid-template-columns: 1fr;
-    /* Single column on mobile */
-    gap: 10px;
-    padding: 15px;
   }
 
-  .info-item {
-    flex-direction: column;
-    align-items: flex-start;
-    font-size: 14px;
-    padding: 8px;
-  }
-
-  .value {
-    text-align: left;
-    margin-top: 5px;
-    font-size: 16px;
-  }
-
-  .token-box {
-    padding: 30px 15px;
-    margin-top: 1.5rem;
-    margin-bottom: 1.5rem;
-  }
-
-  .token-header {
-    font-size: 16px;
-  }
-
-  .token-value {
-    font-size: 1.8em;
-  }
-
-  .pending-increase {
-    display: block;
-    margin-left: 0;
-    margin-top: 10px;
-    font-size: 0.6em;
-  }
-
-  .action-buttons {
-    flex-direction: column;
-    gap: 0.8rem;
-    margin-top: 1.5rem;
-  }
-
-  .mine-button {
-    width: 100%;
-    padding: 12px 20px;
-  }
-
-  .button-container {
-    flex-direction: column;
-    gap: 0.8rem;
-    margin-top: 1.5rem;
-  }
-
-  .add-token-button,
-  .withdraw-button {
-    width: 100%;
-    min-width: auto;
-    padding: 12px 20px;
-    font-size: 15px;
-  }
-
-  .pending-withdrawal-info {
-    padding: 12px;
-    margin: 15px 0;
-  }
-
-  .withdrawal-amount,
-  .mining-balance {
-    font-size: 1em;
-  }
-
-  .next-mining-time {
-    font-size: 0.85em;
-  }
-}
-
-/* Small Mobile Styles (max-width: 480px) */
-@media (max-width: 480px) {
-  .dashboard {
-    padding: 1rem 0.8rem;
-    border-radius: 6px;
-  }
-
-  .user-info {
-    padding: 12px;
-    border-radius: 8px;
-  }
-
-  .info-item {
-    font-size: 13px;
-    padding: 6px;
-  }
-
-  .value {
-    font-size: 14px;
-  }
-
-  .token-box {
-    padding: 25px 12px;
-  }
-
-  .token-value {
-    font-size: 1.5em;
-  }
-
-  .token-header {
-    font-size: 14px;
-  }
-
-  .add-token-button,
-  .withdraw-button,
-  .mine-button {
-    padding: 10px 16px;
-    font-size: 14px;
-  }
-}
-
-/* Extra Small Mobile - 320px Fix */
-@media (max-width: 320px) {
-  .dashboard-container {
-    padding: 5px;
-    gap: 5px;
-  }
-
-  .dashboard {
-    padding: 0.8rem 0.5rem;
-    margin: 0;
-    border-radius: 4px;
-    max-width: 100%;
-    box-sizing: border-box;
-  }
-
-  .user-info {
-    padding: 10px;
-    gap: 8px;
-    border-radius: 6px;
-  }
-
-  .info-item {
-    font-size: 12px;
-    padding: 5px;
-  }
-
-  .label {
-    font-size: 12px;
-  }
-
-  .value {
-    font-size: 13px;
-  }
-
-  .token-box {
-    padding: 20px 10px;
-    margin-top: 1rem;
-    margin-bottom: 1rem;
-  }
-
-  .token-header {
-    font-size: 13px;
-  }
-
-  .token-value {
-    font-size: 1.3em;
-  }
-
-  .add-token-button,
-  .withdraw-button,
-  .mine-button {
-    padding: 10px 12px;
-    font-size: 13px;
-  }
-
-  .button-container,
-  .action-buttons {
-    gap: 0.6rem;
+  .tasks-grid {
+    grid-template-columns: 1fr;
   }
 }

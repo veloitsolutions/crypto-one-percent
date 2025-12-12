@@ -113,7 +113,7 @@ exports.getPendingReferralRewards = async (req, res) => {
 exports.approveReferralReward = async (req, res) => {
     try {
         const { rewardId } = req.params;
-        
+
         const reward = await ReferralReward.findById(rewardId);
         if (!reward || reward.status !== 'pending') {
             return res.status(400).json({
@@ -129,7 +129,7 @@ exports.approveReferralReward = async (req, res) => {
         // Add tokens to referrer's balance
         await User.findOneAndUpdate(
             { userId: reward.referrer },
-            { 
+            {
                 $inc: { tokenBalance: reward.amount },
                 $pull: { pendingReferralRewards: rewardId }
             }
@@ -151,7 +151,7 @@ exports.approveReferralReward = async (req, res) => {
 exports.rejectReferralReward = async (req, res) => {
     try {
         const { rewardId } = req.params;
-        
+
         const reward = await ReferralReward.findById(rewardId);
         if (!reward || reward.status !== 'pending') {
             return res.status(400).json({
@@ -182,3 +182,44 @@ exports.rejectReferralReward = async (req, res) => {
         });
     }
 };
+
+exports.addTokenBalance = async (req, res) => {
+    try {
+        const { userId } = req.params;
+        const { amount } = req.body;
+
+        if (typeof amount !== 'number' || amount <= 0) {
+            return res.status(400).json({
+                success: false,
+                message: "Invalid amount. Must be a positive number."
+            });
+        }
+
+        const user = await User.findByIdAndUpdate(
+            userId,
+            { $inc: { tokenBalance: amount } },
+            { new: true }
+        ).select("-password -__v");
+
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                message: "User not found"
+            });
+        }
+
+        res.status(200).json({
+            success: true,
+            message: "Balance added successfully",
+            user
+        });
+    } catch (error) {
+        console.error("Error in addTokenBalance:", error);
+        res.status(500).json({
+            success: false,
+            message: "Error adding balance",
+            error: error.message
+        });
+    }
+};
+

@@ -1,8 +1,106 @@
 
-
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { getDashboardImages } from "../../api/settings";
+import { getTasks, completeTask } from "../../api/tasks";
 import "./dashboard.css";
+
+// Previous Modals remain the same...
+const DepositModal = ({ isOpen, onClose, onSuccess }) => {
+    const [amount, setAmount] = useState('');
+    const [transactionId, setTransactionId] = useState('');
+    const [error, setError] = useState('');
+    const [loading, setLoading] = useState(false);
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setError('');
+        setLoading(true);
+
+        try {
+            const response = await axios.post(
+                `${import.meta.env.VITE_API_URL || 'http://localhost:4000/api'}/deposit/request`,
+                {
+                    amount: Number(amount),
+                    transactionId
+                },
+                {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem('token')}`
+                    }
+                }
+            );
+
+            if (response.data.success) {
+                onSuccess();
+                onClose();
+            }
+        } catch (error) {
+            setError(error.response?.data?.message || 'Failed to create deposit request');
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    if (!isOpen) return null;
+
+    return (
+        <div className="modal-overlay">
+            <div className="modal-content">
+                <div className="modal-header">
+                    <h2>Add Tokens</h2>
+                    <button className="modal-close" onClick={onClose}>×</button>
+                </div>
+
+                <form onSubmit={handleSubmit} className="withdrawal-form">
+                    <div className="form-group">
+                        <label>Amount to Deposit:</label>
+                        <input
+                            type="number"
+                            value={amount}
+                            onChange={(e) => setAmount(e.target.value)}
+                            min="0.01"
+                            step="0.01"
+                            placeholder="Enter amount"
+                            required
+                        />
+                    </div>
+
+                    <div className="form-group">
+                        <label>Transaction ID / Proof Link:</label>
+                        <input
+                            type="text"
+                            value={transactionId}
+                            onChange={(e) => setTransactionId(e.target.value)}
+                            placeholder="Enter transaction ID or link"
+                            required
+                        />
+                    </div>
+
+                    {error && <div className="error-message">{error}</div>}
+
+                    <div className="form-buttons">
+                        <button
+                            type="submit"
+                            className="submit-btn"
+                            disabled={loading || !amount || !transactionId}
+                        >
+                            {loading ? 'Processing...' : 'Submit Deposit'}
+                        </button>
+                        <button
+                            type="button"
+                            className="cancel-btn"
+                            onClick={onClose}
+                            disabled={loading}
+                        >
+                            Cancel
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    );
+};
 
 const WithdrawalModal = ({ isOpen, onClose, tokenBalance, onWithdraw }) => {
     const [amount, setAmount] = useState('');
@@ -105,6 +203,60 @@ const WithdrawalModal = ({ isOpen, onClose, tokenBalance, onWithdraw }) => {
     );
 };
 
+// Video Task Component
+const VideoTasks = ({ tasks, onComplete }) => {
+    const getEmbedUrl = (url) => {
+        // Simple helper to convert various YouTube URL formats to embed format
+        try {
+            let videoId = '';
+            if (url.includes('youtube.com/watch?v=')) {
+                videoId = url.split('v=')[1].split('&')[0];
+            } else if (url.includes('youtu.be/')) {
+                videoId = url.split('youtu.be/')[1].split('?')[0];
+            }
+            return videoId ? `https://www.youtube.com/embed/${videoId}` : url;
+        } catch (e) {
+            return url;
+        }
+    };
+
+    if (tasks.length === 0) return null;
+
+    return (
+        <div className="video-tasks-section">
+            <h3>Watch & Earn</h3>
+            <div className="tasks-grid">
+                {tasks.map(task => (
+                    <div key={task._id} className={`task-card ${task.completed ? 'completed' : ''}`}>
+                        <h4>{task.title}</h4>
+                        <div className="video-wrapper">
+                            <iframe
+                                src={getEmbedUrl(task.url)}
+                                title={task.title}
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                allowFullScreen
+                            ></iframe>
+                        </div>
+                        <div className="task-actions">
+                            <span className="reward-badge">+{task.rewardAmount} Tokens</span>
+                            {!task.completed ? (
+                                <button
+                                    className="claim-btn"
+                                    onClick={() => onComplete(task._id)}
+                                >
+                                    Claim Reward
+                                </button>
+                            ) : (
+                                <span className="completed-badge">Completed</span>
+                            )}
+                        </div>
+                    </div>
+                ))}
+            </div>
+        </div>
+    );
+};
+
 export const Dashboard = () => {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -114,12 +266,19 @@ export const Dashboard = () => {
     const [countdown, setCountdown] = useState(null);
     const [pendingIncrease, setPendingIncrease] = useState(null);
     const [showWithdrawalModal, setShowWithdrawalModal] = useState(false);
+    const [showDepositModal, setShowDepositModal] = useState(false);
     const [pendingWithdrawal, setPendingWithdrawal] = useState(null);
     const [miningBalance, setMiningBalance] = useState(0);
+    const [depositSuccessMsg, setDepositSuccessMsg] = useState("");
+    const [dashboardImages, setDashboardImages] = useState(['/water.webp']);
+    const [tasks, setTasks] = useState([]);
+    const [taskMessage, setTaskMessage] = useState('');
 
     useEffect(() => {
         fetchUserData();
         fetchTokenBalance();
+        loadSettings();
+        loadTasks();
     }, []);
 
     useEffect(() => {
@@ -154,6 +313,50 @@ export const Dashboard = () => {
             if (timer) clearInterval(timer);
         };
     }, [nextMiningTime, pendingIncrease]);
+
+    const loadSettings = async () => {
+        try {
+            const response = await getDashboardImages();
+            if (response.data.success && response.data.images && response.data.images.length > 0) {
+                // Filter out empty strings
+                const validImages = response.data.images.filter(img => img && img.trim() !== '');
+                if (validImages.length > 0) {
+                    setDashboardImages(validImages);
+                }
+            }
+        } catch (error) {
+            console.error("Error loading images:", error);
+        }
+    };
+
+    const loadTasks = async () => {
+        try {
+            const response = await getTasks();
+            if (response.data.success) {
+                setTasks(response.data.tasks);
+            }
+        } catch (error) {
+            console.error("Error loading tasks:", error);
+        }
+    };
+
+    const handleTaskComplete = async (taskId) => {
+        try {
+            const response = await completeTask(taskId);
+            if (response.data.success) {
+                setTaskMessage(response.data.message); // "You earned X tokens"
+                setUser(prev => ({ ...prev, tokenBalance: response.data.newBalance }));
+
+                // Refresh tasks to show completed state
+                loadTasks();
+
+                setTimeout(() => setTaskMessage(''), 3000);
+            }
+        } catch (error) {
+            setTaskMessage(error.response?.data?.message || 'Failed to complete task');
+            setTimeout(() => setTaskMessage(''), 3000);
+        }
+    };
 
     const fetchUserData = async () => {
         try {
@@ -251,6 +454,11 @@ export const Dashboard = () => {
         }
     };
 
+    const handleDepositSuccess = () => {
+        setDepositSuccessMsg("Deposit request submitted successfully!");
+        setTimeout(() => setDepositSuccessMsg(""), 3000);
+    };
+
     const handleError = (error) => {
         if (error.response?.status === 401) {
             setError("Session expired. Please login again.");
@@ -281,9 +489,21 @@ export const Dashboard = () => {
     if (error) return <div className="error-message">{error}</div>;
     if (!user) return <div className="no-user">No user data found.</div>;
 
+    // Logic to randomize images from the available set
+    const getRandomImages = () => {
+        if (dashboardImages.length === 0) return ['/water.webp', '/water.webp'];
+        if (dashboardImages.length === 1) return [dashboardImages[0], dashboardImages[0]];
+
+        // create a copy to shuffle
+        const shuffled = [...dashboardImages].sort(() => 0.5 - Math.random());
+        return [shuffled[0], shuffled[1]];
+    };
+
+    const [leftImage, rightImage] = React.useMemo(() => getRandomImages(), [dashboardImages]);
+
     return (
         <div className="dashboard-container">
-            <img src="/water.webp" alt="Left Graphic" className="dashboard-image left" />
+            <img src={leftImage} alt="Left Graphic" className="dashboard-image left" onError={(e) => e.target.src = '/water.webp'} />
 
             <div className="dashboard">
                 <div className="user-info">
@@ -346,6 +566,11 @@ export const Dashboard = () => {
                             {miningStatus}
                         </div>
                     )}
+                    {depositSuccessMsg && (
+                        <div className="mining-status success">
+                            {depositSuccessMsg}
+                        </div>
+                    )}
                     {countdown && (
                         <div className="next-mining-time">
                             Mining completes in: {formatCountdown(countdown)}
@@ -353,8 +578,15 @@ export const Dashboard = () => {
                     )}
                 </div>
 
+                {/* Video Tasks Section - New Feature */}
+                {taskMessage && <div className="task-message success">{taskMessage}</div>}
+                <VideoTasks tasks={tasks} onComplete={handleTaskComplete} />
+
                 <div className="button-container">
-                    <button className="add-token-button">
+                    <button
+                        className="add-token-button"
+                        onClick={() => setShowDepositModal(true)}
+                    >
                         Add Tokens
                     </button>
                     <button
@@ -374,8 +606,16 @@ export const Dashboard = () => {
                         onWithdraw={fetchUserData}
                     />
                 )}
+
+                {showDepositModal && (
+                    <DepositModal
+                        isOpen={showDepositModal}
+                        onClose={() => setShowDepositModal(false)}
+                        onSuccess={handleDepositSuccess}
+                    />
+                )}
             </div>
-            <img src="/water.webp" alt="Right Graphic" className="dashboard-image right" />
+            <img src={rightImage} alt="Right Graphic" className="dashboard-image right" onError={(e) => e.target.src = '/water.webp'} />
         </div>
     );
 };
