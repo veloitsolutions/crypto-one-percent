@@ -7,11 +7,12 @@ export const getDashboardImages = async () => {
     return axios.get(`${API_URL}/images`);
 };
 
-export const updateDashboardImages = async (images) => {
+export const updateDashboardImages = async (formData) => {
     const token = localStorage.getItem('token');
-    return axios.post(`${API_URL}/images`, { images }, {
+    return axios.post(`${API_URL}/images`, formData, {
         headers: {
-            Authorization: `Bearer ${token}`
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'multipart/form-data'
         },
         withCredentials: true
     });

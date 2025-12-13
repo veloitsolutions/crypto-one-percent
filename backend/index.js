@@ -14,15 +14,14 @@ app.use(cors({
 }));
 
 
-//for ad upload
-// app.use(express.json());
-// const fileupload = require("express-fileupload");
-// // app.use(fileupload());
-// app.use(fileupload({
-//     useTempFiles: true,
-//     tempFileDir: '/tmp/',
-//     createParentPath: true
-// }));
+const fileupload = require("express-fileupload");
+app.use(fileupload({
+    useTempFiles: true,
+    tempFileDir: '/tmp/'
+}));
+
+const cloudinary = require("./config/cloudinary");
+cloudinary.cloudinaryConnect();
 
 const cookieParser = require("cookie-parser");
 app.use(cookieParser());

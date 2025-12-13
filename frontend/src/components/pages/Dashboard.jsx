@@ -485,21 +485,17 @@ export const Dashboard = () => {
         return `${seconds}s`;
     };
 
-    if (loading) return <div className="loading">Loading...</div>;
-    if (error) return <div className="error-message">{error}</div>;
-    if (!user) return <div className="no-user">No user data found.</div>;
-
-    // Logic to randomize images from the available set
-    const getRandomImages = () => {
+    const [leftImage, rightImage] = React.useMemo(() => {
         if (dashboardImages.length === 0) return ['/water.webp', '/water.webp'];
         if (dashboardImages.length === 1) return [dashboardImages[0], dashboardImages[0]];
 
-        // create a copy to shuffle
         const shuffled = [...dashboardImages].sort(() => 0.5 - Math.random());
         return [shuffled[0], shuffled[1]];
-    };
+    }, [dashboardImages]);
 
-    const [leftImage, rightImage] = React.useMemo(() => getRandomImages(), [dashboardImages]);
+    if (loading) return <div className="loading">Loading...</div>;
+    if (error) return <div className="error-message">{error}</div>;
+    if (!user) return <div className="no-user">No user data found.</div>;
 
     return (
         <div className="dashboard-container">

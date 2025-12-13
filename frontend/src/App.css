@@ -1,5 +1,5 @@
-/* .App{
-  background-color: #fefefe;
+/* .App {
+  background-color: transparent;
   height: 100vh;
   width: 100%;
 } */
@@ -12,7 +12,8 @@
 }
 
 /* Full height for html and body */
-html, body {
+html,
+body {
   height: 100%;
 }
 
@@ -20,29 +21,31 @@ html, body {
 .page-container {
   display: flex;
   flex-direction: column;
-  min-height: 100vh; /* Ensure it takes the full viewport height */
+  min-height: 100vh;
+  /* Ensure it takes the full viewport height */
 }
 
 /* Content should take all available space, pushing footer down */
 .content-wrap {
   flex: 1;
+  display: flex;
+  flex-direction: column;
 }
 
-/* App specific styles */
-/* .App {
-  padding: 20px; 
-} */
+.App {
+  flex: 1;
+}
 
-/* Footer styles (if not already in Footer.css) */
+/* Footer styles (handled in Footer.css mostly, but ensure no conflict) */
 .main-footer {
-  background-color: #0f172a;
-  color: white;
-  padding: 20px 0;
   width: 100%;
 }
 
+/* Admin Layout - Remove fixed light background */
 .admin-only-layout {
   padding: 20px;
   min-height: 100vh;
-  background-color: #f5f5f5;
+  background-color: transparent;
+  /* Changed from #f5f5f5 to transparent */
+  width: 100%;
 }
